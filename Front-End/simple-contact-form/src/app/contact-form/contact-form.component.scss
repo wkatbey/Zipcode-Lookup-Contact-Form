@@ -1,0 +1,21 @@
+.padding-top {
+    padding-top: 2rem;
+}
+
+.heading {
+    &.text-center {
+        text-align: center;
+    }
+    font-size: 2rem;
+}
+
+.form-wrapper {
+    margin-left: 3rem;
+    margin-right: 3rem;
+
+    mat-form-field {
+        margin-right: 2rem !important;
+        width: 100%;
+    }
+}
+
