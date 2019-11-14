@@ -1,3 +1,5 @@
 db.lock
 node_modules/
 .vs/
+bin/
+obj/

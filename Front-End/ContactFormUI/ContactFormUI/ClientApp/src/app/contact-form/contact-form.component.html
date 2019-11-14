@@ -1,0 +1,85 @@
+<span class="padding-top">
+  <form [formGroup]="contactForm" class="form-wrapper">
+    <span class="padding-top">
+      <p class="heading text-center">Identifying Information</p>
+    </span>
+    <mat-grid-list cols="2" rowHeight="1:0.1">
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="First Name"
+                 formControlName="firstName">
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Last Name"
+                 formControlName="lastName">
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Phone Number"
+                 formControlName="phoneNumber">
+        </mat-form-field>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <span class="padding-top">
+      <p class="heading text-center">Location</p>
+    </span>
+    <mat-grid-list cols="2" rowHeight="1:0.1">
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Address (Line 1)"
+                 formControlName="addressFirstLine"
+                 (blur)="getZipcodeByAddress()">
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Address (Line 2)"
+                 formControlName="addressSecondLine"
+                 (blur)="getZipcodeByAddress()">
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="City"
+                 formControlName="city"
+                 (blur)="getZipcodeByAddress()">
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <mat-label>State</mat-label>
+          <select matNativeControl
+                  formControlName="state"
+                  (blur)="getZipcodeByAddress()"
+                  required>
+            <option *ngFor="let state of states" [ngValue]="state">
+              {{state.name}}
+            </option>
+          </select>
+        </mat-form-field>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Zipcode"
+                 formControlName="zipcode">
+        </mat-form-field>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list cols="2" rowHeight="1:0.1" class="padding-top">
+      <button mat-raised-button color="primary" (click)="openDialog()">Submit</button>
+    </mat-grid-list>
+    <br>
+  </form>
+
+</span>
+

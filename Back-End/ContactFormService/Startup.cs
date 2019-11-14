@@ -34,7 +34,7 @@ namespace ContactFormService
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins("https://localhost:44356")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
