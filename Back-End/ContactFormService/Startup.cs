@@ -34,9 +34,15 @@ namespace ContactFormService
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("https://localhost:44356")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    builder.WithOrigins(
+                        new string[]
+                        {
+                        "https://localhost:44356",
+                        "https://micdma.azurewebsites.net"
+                        }
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
                 });
             });
 
