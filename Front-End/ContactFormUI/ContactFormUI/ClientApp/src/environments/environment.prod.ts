@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://micdma-api.azurewebsites.net/api/'
+  baseUrl: 'https://micdma-middleware.azurewebsites.net/api/'
 };
