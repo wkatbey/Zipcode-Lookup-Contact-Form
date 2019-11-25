@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: 'https://zipcode-lookup-web-api.azurewebsites.net/',
+  production: 'false',
   baseUrl: 'https://localhost:5001/api/'
 };
 

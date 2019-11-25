@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://micdma-middleware.azurewebsites.net/api/'
+  baseUrl: 'https://zipcode-lookup-web-api.azurewebsites.net/api/'
 };
