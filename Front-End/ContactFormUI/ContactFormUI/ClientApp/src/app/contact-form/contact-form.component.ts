@@ -9,6 +9,8 @@ import { ZipcodeLookupService } from '../services/zipcode-lookup.service';
 import { ZipcodeLookupResponse } from '../models/zipcode-lookup-response';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserSubmissionData } from '../models/user-submission-data';
+import { LocationValidator } from './validators/location-validator';
+import { startWith, filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contact-form',
@@ -17,7 +19,11 @@ import { UserSubmissionData } from '../models/user-submission-data';
 })
 export class ContactFormComponent implements OnInit, OnDestroy {
 
+  identifyingInfoForm: FormGroup;
+  locationForm: FormGroup;
+
   contactForm: FormGroup;
+
   statesSubscription: Subscription;
   states$: Observable<UsState[]>;
   states: UsState[];
@@ -28,16 +34,34 @@ export class ContactFormComponent implements OnInit, OnDestroy {
     private zipcodeLookupService: ZipcodeLookupService,
     public dialog: MatDialog) {
 
-    this.contactForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      addressFirstLine: ['', Validators.required],
-      addressSecondLine: [''],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipcode: ['', Validators.required],
-      phoneNumber: ['', Validators.required]
+
+    this.contactForm = fb.group({
+      identifyingInfoForm: fb.group(
+        {
+          firstName: ['', Validators.required],
+          lastName: ['', Validators.required],
+          phoneNumber: ['', Validators.required]
+        },
+        {
+          updateOn: 'blur'
+        }
+      ),
+      locationForm: fb.group(
+        {
+          addressFirstLine: ['', Validators.required],
+          addressSecondLine: [''],
+          city: ['', Validators.required],
+          state: ['', Validators.required],
+          zipcode: [''],
+        },
+        {
+          asyncValidators: LocationValidator.locationExists(this.zipcodeLookupService),
+          updateOn: 'blur'
+        }
+      )
     });
+
+    this.locationForm = <FormGroup>this.contactForm.controls.locationForm;
   }
 
   ngOnInit() {
@@ -51,45 +75,57 @@ export class ContactFormComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
+    let contactForm = this.contactForm;
 
-    console.log("Method");
-    let contactForm = this.contactForm.value;
+    let formValidationIndicator = this.contactForm.statusChanges.pipe(
+      startWith(this.contactForm.status),
+      filter(status => status !== 'PENDING'),
+      take(1),
+      filter(status => status === 'VALID')
+    );
 
-    this.dialog.open(UserSubmissionDialog, {
-      width: '250px',
-      data: {
-        firstName: contactForm.firstName,
-        lastName: contactForm.lastName,
-        phoneNumber: contactForm.phoneNumber,
-        location: new Address(
-          contactForm.addressFirstLine,
-          contactForm.addressSecondLine,
-          contactForm.city,
-          contactForm.state,
-          contactForm.zipcode)
-      }
+    formValidationIndicator.subscribe(x => {
+
+      let identifyingInfoFormValue = contactForm.controls.identifyingInfoForm.value;
+      let locationFormValue = contactForm.controls.locationForm.value;
+
+      this.dialog.open(UserSubmissionDialog, {
+        width: '250px',
+        data: {
+          firstName: identifyingInfoFormValue.firstName,
+          lastName: identifyingInfoFormValue.lastName,
+          phoneNumber: identifyingInfoFormValue.phoneNumber,
+          location: new Address(
+            locationFormValue.addressFirstLine,
+            locationFormValue.addressSecondLine,
+            locationFormValue.city,
+            locationFormValue.state,
+            locationFormValue.zipcode)
+        }
+      });
     });
+
   }
 
   getZipcodeByAddress() {
-    let contactForm = this.contactForm.value;
+    let locationForm = this.contactForm.controls.locationForm;
+    let locationFormValue = locationForm.value;
 
     let address = new Address(
-      contactForm.addressFirstLine,
-      contactForm.addressSecondLine,
-      contactForm.city,
-      contactForm.state
+      locationFormValue.addressFirstLine,
+      locationFormValue.addressSecondLine,
+      locationFormValue.city,
+      locationFormValue.state
     );
 
     if ((address.addressFirstLine || address.addressSecondLine)
       && address.city && address.state) {
 
+
       return this.zipcodeLookupService.getZipcodeByAddress(address).subscribe(response => {
         let zipcode = new ZipcodeLookupResponse(response).zipcode;
 
-        console.log(zipcode);
-
-        this.contactForm.patchValue({ 'zipcode': zipcode });
+        locationForm.patchValue({ 'zipcode': zipcode });
       });
     }
   }

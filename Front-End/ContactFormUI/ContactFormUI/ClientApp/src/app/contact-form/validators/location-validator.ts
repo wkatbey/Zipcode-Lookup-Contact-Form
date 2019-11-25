@@ -8,7 +8,6 @@ import { ZipcodeLookupResponse } from 'src/app/models/zipcode-lookup-response';
 export class LocationValidator {
   static locationExists(zipcodeLookupService: ZipcodeLookupService): AsyncValidatorFn {
     return (formGroup: FormGroup): Observable<ValidationErrors> => {
-
         let addressFirstLine = formGroup.get('addressFirstLine').value;
         let addressSecondLine = formGroup.get('addressSecondLine').value;
         let city = formGroup.get('city').value;
@@ -21,7 +20,8 @@ export class LocationValidator {
             map(response => {
               let zipcode = new ZipcodeLookupResponse(response).zipcode;
 
-              return zipcode ? null : { locationInvalid : true };
+              
+              return zipcode != undefined  && zipcode != null ? null : { locationInvalid : true };
             })
           );
         }
