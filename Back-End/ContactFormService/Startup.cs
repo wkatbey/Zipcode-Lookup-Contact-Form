@@ -38,7 +38,7 @@ namespace ContactFormService
                         new string[]
                         {
                         "https://localhost:44356",
-                        "https://micdma.azurewebsites.net"
+                        "https://zipcode-lookup-ui.azurewebsites.net"
                         }
                     )
                     .AllowAnyHeader()
